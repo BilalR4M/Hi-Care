@@ -1,12 +1,28 @@
-# Eclipse specific files
+# Eclipse / IDE
 .metadata/
 .settings/
 .classpath
 .project
 .idea/
+*.iml
 
 # Build output
 build/
+out/
+target/
 
 # Libraries
 WebContent/WEB-INF/lib/
+
+# Local / agent scratch
+skills/
+.cursor/
+*.hdr
+cookies.txt
+login.body
+login.hdr
+*.local.md
+
+# OS
+Thumbs.db
+.DS_Store

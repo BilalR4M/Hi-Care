@@ -1,249 +1,95 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="com.connection.*"%>
-<%@ page import="com.bean.Appointment"%>
-<%@page import="java.util.*"%>
+<%
+	if (session.getAttribute("uname") == null || "".equals(session.getAttribute("uname"))) {
+		response.sendRedirect("patientLogin.jsp");
+		return;
+	}
+	request.setAttribute("nav", "patient");
+	request.setAttribute("profileHref", "updatePatientProfile.jsp");
+%>
+<%@ include file="includes/head.jsp" %>
+<%@ include file="includes/shell-open.jsp" %>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="images/logo.png" rel="icon" />
-<title>Online Hospital Management System</title>
-<!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
-<script src="js/jquery.js"></script>
-<script type="text/javascript">
-	$(document).ready(function() {
+<section class="card">
+	<h1 class="card__title">Book a visit</h1>
+	<ul class="tabs">
+		<li><a class="tabs__link is-active" href="#list">Doctor list</a></li>
+		<li><a class="tabs__link" href="#book">Book a visit</a></li>
+	</ul>
 
-		$('#doctorlist').show();
-		$('.doctor li:first-child a').addClass('active');
-		$('.doctor li a').click(function(e) {
-
-			var tabDiv = this.hash;
-			$('.doctor li a').removeClass('active');
-			$(this).addClass('.active');
-			$('.switchgroup').hide();
-			$(tabDiv).fadeIn();
-			e.preventDefault();
-
-		});
-
-	});
-</script>
-</head>
-<body>
-	<div class="container-fluid">
-
-		<!--- Header Start -------->
-		<div class="row header">
-
-			<div class="col-md-10">
-				<h2>Hi Care</h2>
-			</div>
-
-			<div class="col-md-2 ">
-				<ul class="nav nav-pills ">
-					<li class="dropdown dmenu"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown" role="button" aria-haspopup="true"
-						aria-expanded="false"> <%
- 	out.print((String) session.getAttribute("uname"));
- %> <span class="caret"></span>
-					</a>
-						<ul class="dropdown-menu ">
-
-							<li><a href="profile.jsp">Change Profile</a></li>
-							<li role="separator" class="divider"></li>
-							<li><a href="logout.jsp">Logout</a></li>
-
-						</ul></li>
-				</ul>
-			</div>
+	<div id="list" class="panel is-visible">
+		<div class="table-wrap">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Department</th>
+						<th>Email</th>
+					</tr>
+				</thead>
+				<tbody>
+				<%
+					Connection con = ConnectionProvider.getCon();
+					Statement st = con.createStatement();
+					ResultSet rs = st.executeQuery("select * from doctor");
+					while (rs.next()) {
+				%>
+					<tr>
+						<td class="table__id"><%=rs.getInt(1)%></td>
+						<td><%=rs.getString(2)%></td>
+						<td><%=rs.getString(7)%></td>
+						<td><%=rs.getString(3)%></td>
+					</tr>
+				<%
+					}
+				%>
+				</tbody>
+			</table>
 		</div>
-		<!--- Header Ends --------->
-		<%
-			if (session.getAttribute("uname") != null && session.getAttribute("uname") != "") {
-		%>
+	</div>
 
-		<div class="row">
-
-			<!----- Menu Area Start ------>
-			<div class="col-md-2 menucontent">
-
-				<a href="#"><h1>Dashboard</h1></a>
-
-				<ul class="nav nav-pills nav-stacked">
-					<li role="presentation"><a href="afterPatientLogin.jsp">Book
-							An Appointment</a></li>
-					<li role="presentation"><a href="updatePatientProfile.jsp">Update
-							Profile</a></li>
-					<li role="presentation"><a href="viewAppointment.jsp">View
-							Appointment</a></li>
-					<li role="presentation"><a href="feedback.jsp">Feedback</a></li>
-				</ul>
+	<div id="book" class="panel">
+		<form class="form form--wide" action="appointmentProcess.jsp" method="post">
+			<div class="form__field">
+				<label class="form__label" for="name">Name</label>
+				<input class="form__control" id="name" type="text" name="name" required>
 			</div>
-			<!---- Menu Ares Ends  -------->
-
-			<!-------   Content Area start  --------->
-			<div class="col-md-10 maincontent">
-
-				<!-----------  Content Menu Tab Start   ------------>
-				<div class="panel panel-default contentinside">
-					<div class="panel-heading">Book An Appoinment</div>
-
-					<!----------------   Panel Body Start   --------------->
-					<div class="panel-body">
-						<ul class="nav nav-tabs doctor">
-
-
-							<li role="presentation"><a href="#doctorlist">Doctor
-									List</a></li>
-							<li role="presentation"><a href="#adddoctor">Book An
-									Appoinment</a></li>
-						</ul>
-
-
-						<!----------------   Display Department Data List ends   --------------->
-
-
-						<!----------------   Modal ends here  --------------->
-
-
-
-
-						<!----------------   Add Department Start   --------------->
-						<div id="adddoctor" class="switchgroup">
-							<div class="panel panel-default">
-								<div class="panel-body">
-									<form class="form-horizontal" action="appointmentProcess.jsp"
-										method="post">
-										<div class="form-group">
-											<label class="col-sm-4 control-label">Name</label>
-											<div class="col-sm-4">
-												<input type="text" class="form-control" name="name"
-													placeholder="Name">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-4 control-label">Email</label>
-											<div class="col-sm-4">
-												<input type="text" class="form-control" name="email"
-													placeholder="Email...">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-4 control-label">Contact</label>
-											<div class="col-sm-4">
-												<input type="text" class="form-control" name="contact"
-													placeholder="Contact...">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-4 control-label">Age</label>
-											<div class="col-sm-4">
-												<input type="text" class="form-control" name="age"
-													placeholder="Age...">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-4 control-label">Day</label>
-											<div class="col-sm-4">
-												<input type="date" class="form-control" name="day"
-													placeholder="Day...">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-4 control-label">Speciality</label>
-											<div class="col-sm-4">
-												<input type="text" class="form-control" name="speciality"
-													placeholder="Speciality...">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-4 control-label">Description</label>
-											<div class="col-sm-4">
-												<input type="text" class="form-control" name="description"
-													placeholder="Description...">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-4 control-label">Doctor Id</label>
-											<div class="col-sm-4">
-												<input type="text" class="form-control" name="id"
-													placeholder="Doctor Id...">
-											</div>
-										</div>
-
-
-
-										<div class="form-group">
-											<div class="col-sm-offset-4 col-sm-10">
-												<button type="submit" class="btn btn-primary">Book
-													Appointment</button>
-											</div>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-						<!----------------   Add Department Ends   --------------->
-						<div id="doctorlist" class="switchgroup">
-							<table class="table table-bordered table-hover">
-								<tr class="active">
-									<td>Doctor ID</td>
-									<td>Doctor Name</td>
-									<td>Department</td>
-									<td>Email</td>
-
-								</tr>
-								<%
-									int docId = 0;
-										Connection con = ConnectionProvider.getCon();
-										Statement st = con.createStatement();
-										ResultSet rs = st.executeQuery("select * from doctor");
-										while (rs.next()) {
-											docId = rs.getInt(1);
-											session.setAttribute("docId", docId);
-								%>
-
-								<tr>
-									<td><input type="text" name="did"
-										value="<%=rs.getInt(1)%>" class="form-control"></td>
-									<td><%=rs.getString(2)%></td>
-									<td><%=rs.getString(7)%></td>
-									<td><%=rs.getString(3)%></td>
-								</tr>
-
-								<%
-									}
-								%>
-
-							</table>
-						</div>
-					</div>
-					<!----------------   Panel Body Ends   --------------->
-				</div>
-				<!-----------  Content Menu Tab Ends   ------------>
+			<div class="form__field">
+				<label class="form__label" for="email">Email</label>
+				<input class="form__control" id="email" type="text" name="email" required>
 			</div>
-			<!-------   Content Area Ends  --------->
-		</div>
-		<script src="js/bootstrap.min.js"></script>
-		<%
-			} else {
-				response.sendRedirect("patientLogin.jsp");
-			}
-		%>
-	
-</body>
-</html>
+			<div class="form__field">
+				<label class="form__label" for="contact">Contact</label>
+				<input class="form__control" id="contact" type="text" name="contact" required>
+			</div>
+			<div class="form__field">
+				<label class="form__label" for="age">Age</label>
+				<input class="form__control" id="age" type="text" name="age">
+			</div>
+			<div class="form__field">
+				<label class="form__label" for="day">Day</label>
+				<input class="form__control" id="day" type="date" name="day" required>
+			</div>
+			<div class="form__field">
+				<label class="form__label" for="speciality">Speciality</label>
+				<input class="form__control" id="speciality" type="text" name="speciality">
+			</div>
+			<div class="form__field">
+				<label class="form__label" for="description">Description</label>
+				<input class="form__control" id="description" type="text" name="description">
+			</div>
+			<div class="form__field">
+				<label class="form__label" for="id">Doctor ID</label>
+				<input class="form__control" id="id" type="text" name="id" required>
+			</div>
+			<div class="form__actions">
+				<button class="btn btn--primary" type="submit">Book a visit</button>
+			</div>
+		</form>
+	</div>
+</section>
+
+<%@ include file="includes/shell-close.jsp" %>

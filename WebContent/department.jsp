@@ -1,278 +1,85 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="com.connection.*"%>
-<%@ page import="com.bean.Department"%>
-<%@page import="java.util.*"%>
+<%
+	if (session.getAttribute("uname") == null || "".equals(session.getAttribute("uname"))) {
+		response.sendRedirect("index.jsp");
+		return;
+	}
+	request.setAttribute("nav", "staff");
+	request.setAttribute("profileHref", "profile.jsp");
+%>
+<%@ include file="includes/head.jsp" %>
+<%@ include file="includes/shell-open.jsp" %>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="images/logo.png" rel="icon" />
-<title>Hi Care</title>
-<!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
-<script src="js/jquery.js"></script>
-<script type="text/javascript">
-	$(document).ready(function() {
+<section class="card">
+	<h1 class="card__title">Departments</h1>
+	<ul class="tabs">
+		<li><a class="tabs__link is-active" href="#list">Department list</a></li>
+		<li><a class="tabs__link" href="#add">Add department</a></li>
+	</ul>
 
-		$('#doctorlist').show();
-		$('.doctor li:first-child a').addClass('active');
-		$('.doctor li a').click(function(e) {
-
-			var tabDiv = this.hash;
-			$('.doctor li a').removeClass('active');
-			$(this).addClass('.active');
-			$('.switchgroup').hide();
-			$(tabDiv).fadeIn();
-			e.preventDefault();
-
-		});
-
-	});
-</script>
-</head>
-<body>
-	<div class="container-fluid">
-
-		<!--- Header Start -------->
-		<div class="row header">
-
-			<div class="col-md-10">
-				<h2>
-					Nobel Hospital Mangement System
-					</h2>
-			</div>
-
-			<div class="col-md-2 ">
-				<ul class="nav nav-pills ">
-					<li class="dropdown dmenu"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown" role="button" aria-haspopup="true"
-						aria-expanded="false"> <%
- 	out.print((String) session.getAttribute("uname"));
- %> <span class="caret"></span>
-					</a>
-						<ul class="dropdown-menu ">
-
-							<li><a href="profile.jsp">Change Profile</a></li>
-							<li role="separator" class="divider"></li>
-							<li><a href="logout.jsp">Logout</a></li>
-
-						</ul></li>
-				</ul>
-			</div>
-		</div>
-		<!--- Header Ends --------->
-		<%
-			if (session.getAttribute("uname") != null && session.getAttribute("uname") != "") {
-		%>
-
-		<div class="row">
-
-			<!----- Menu Area Start ------>
-			<div class="col-md-2 menucontent">
-
-				<a href="#"><h1>Dashboard</h1></a>
-
-				<ul class="nav nav-pills nav-stacked">
-					<li role="presentation"><a href="department.jsp">Department</a></li>
-					<li role="presentation"><a href="doctor.jsp">Doctors</a></li>
-					<li role="presentation"><a href="patients.jsp">Patients</a></li>
-					<li role="presentation"><a href="nurse.jsp">Nurse</a></li>
-					<li role="presentation"><a href="viewFeedback.jsp">View Feedback</a></li>
-					<li role="presentation"><a href="profile.jsp">Profile</a></li>
-				</ul>
-			</div>
-			<!---- Menu Ares Ends  -------->
-
-			<!-------   Content Area start  --------->
-			<div class="col-md-10 maincontent">
-
-				<!-----------  Content Menu Tab Start   ------------>
-				<div class="panel panel-default contentinside">
-					<div class="panel-heading">Manage Department</div>
-
-					<!----------------   Panel Body Start   --------------->
-					<div class="panel-body">
-						<ul class="nav nav-tabs doctor">
-							<li role="presentation"><a href="#doctorlist">Department
-									List</a></li>
-							<li role="presentation"><a href="#adddoctor">Add
-									Department</a></li>
-						</ul>
-
-						<!----------------   Display Department Data List start   --------------->
-
-						<div id="doctorlist" class="switchgroup">
-							<table class="table table-bordered table-hover">
-								<tr class="active">
-									<td>Department ID</td>
-									<td>Department Name</td>
-									<td>Department Description</td>
-									<td>Options</td>
-								</tr>
-								<%
-									int deptId = 0;
-										Connection con = ConnectionProvider.getCon();
-										Statement st = con.createStatement();
-										ResultSet rs = st.executeQuery("select * from department");
-										while (rs.next()) {
-											deptId = rs.getInt(1);
-											session.setAttribute("deptId", deptId);
-								%>
+	<div id="list" class="panel is-visible">
+		<div class="table-wrap">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+				<%
+					Connection con = ConnectionProvider.getCon();
+					Statement st = con.createStatement();
+					ResultSet rs = st.executeQuery("select * from department");
+					while (rs.next()) {
+				%>
+					<tr>
+						<td class="table__id"><%=rs.getInt(1)%></td>
+						<td><%=rs.getString(2)%></td>
+						<td><%=rs.getString(3)%></td>
+						<td>
+							<div class="table__actions">
+								<a class="btn btn--edit" href="editDepartment.jsp?id=<%=rs.getInt(1)%>">
+									<svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+									Edit
+								</a>
 								<form action="DeleteServlet" method="post">
-									<tr>
-										<td><input type="text" name="did"
-											value="<%=rs.getInt(1)%>" class="form-control"></td>
-										<td><%=rs.getString(2)%></td>
-										<td><%=rs.getString(3)%></td>
-										<td><a href="editDepartment.jsp?id=<%=rs.getInt(1)%>" class="btn btn-primary"
-											data-toggle="modal"> <span
-												class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-										</a> <input type="submit" class="btn btn-danger" value="Delete"
-											class="glyphicon glyphicon-trash" aria-hidden="true">
-
-										</td>
-									</tr>
+									<input type="hidden" name="did" value="<%=rs.getInt(1)%>">
+									<button class="btn btn--danger" type="submit">
+										<svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+										Delete
+									</button>
 								</form>
-								<%
-									}
-								%>
-
-							</table>
-						</div>
-						<!----------------   Display Department Data List ends   --------------->
-
-						<!------ Edit Department Modal Start ---------->
-
-
-						<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-							aria-labelledby="myModalLabel">
-
-							<div class="modal-dialog" role="document">
-								<div class="modal-content">
-
-
-									<div class="modal-header">
-										<button type="button" class="close" data-dismiss="modal"
-											aria-label="Close">
-											<span aria-hidden="true">&times;</span>
-										</button>
-										<h4 class="modal-title" id="myModalLabel">Edit Department
-											Information</h4>
-									</div>
-
-									<div class="modal-body">
-										<div class="panel panel-default">
-											<div class="panel-body">
-												<%
-													ResultSet resultset = st.executeQuery(
-																"select * from department where dept_id='" + session.getAttribute("deptId") + "'");
-														while (resultset.next()) {
-												%>
-												<form class="form-horizontal" action="#">
-
-													<div class="form-group">
-														<label class="col-sm-4 control-label">Department
-															ID</label>
-														<div class="col-sm-4">
-															<input type="number" class="form-control" name="deptId"
-																value="<%=session.getAttribute("deptId")%>"
-																readonly="readonly">
-														</div>
-													</div>
-
-													<div class="form-group">
-														<label class="col-sm-4 control-label">Department
-															Name</label>
-														<div class="col-sm-4">
-															<input type="text" class="form-control" name="deptName"
-																value="<%=resultset.getString(2)%>">
-														</div>
-													</div>
-
-													<div class="form-group">
-														<label class="col-sm-4 control-label">Department
-															Description</label>
-														<div class="col-sm-4">
-															<input type="text" class="form-control" name="deptDesc"
-																value="<%=resultset.getString(3)%>">
-														</div>
-													</div>
-													<%
-														}
-													%>
-													<div class="modal-footer">
-														<button type="button" class="btn btn-default"
-															data-dismiss="modal">Close</button>
-														<input type="submit" class="btn btn-primary"
-															value="Update">
-														</button>
-													</div>
-												</form>
-											</div>
-										</div>
-									</div>
-								</div>
 							</div>
-						</div>
-						<!----------------   Modal ends here  --------------->
-
-
-
-
-						<!----------------   Add Department Start   --------------->
-						<div id="adddoctor" class="switchgroup">
-							<div class="panel panel-default">
-								<div class="panel-body">
-									<form class="form-horizontal" action="departmentProcess.jsp"
-										method="post">
-										<div class="form-group">
-											<label class="col-sm-4 control-label">Department Name</label>
-											<div class="col-sm-4">
-												<input type="text" class="form-control" name="deptName"
-													placeholder="Enter Department Name">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-4 control-label">Department
-												Description</label>
-											<div class="col-sm-4">
-												<input type="text" class="form-control" name="deptDesc"
-													placeholder="Enter Department Description here...">
-											</div>
-										</div>
-
-
-										<div class="form-group">
-											<div class="col-sm-offset-4 col-sm-10">
-												<button type="submit" class="btn btn-primary">Add
-													Department</button>
-											</div>
-										</div>
-									</form>
-								</div>
-							</div>
-						</div>
-						<!----------------   Add Department Ends   --------------->
-					</div>
-					<!----------------   Panel Body Ends   --------------->
-				</div>
-				<!-----------  Content Menu Tab Ends   ------------>
-			</div>
-			<!-------   Content Area Ends  --------->
+						</td>
+					</tr>
+				<%
+					}
+				%>
+				</tbody>
+			</table>
 		</div>
-		<script src="js/bootstrap.min.js"></script>
-		<%
-			} else {
-				response.sendRedirect("index.jsp");
-			}
-		%>
-	
-</body>
-</html>
+	</div>
+
+	<div id="add" class="panel">
+		<form class="form" action="departmentProcess.jsp" method="post">
+			<div class="form__field">
+				<label class="form__label" for="deptName">Department name</label>
+				<input class="form__control" id="deptName" type="text" name="deptName" required>
+			</div>
+			<div class="form__field">
+				<label class="form__label" for="deptDesc">Description</label>
+				<input class="form__control" id="deptDesc" type="text" name="deptDesc" required>
+			</div>
+			<div class="form__actions">
+				<button class="btn btn--primary" type="submit">Add department</button>
+			</div>
+		</form>
+	</div>
+</section>
+
+<%@ include file="includes/shell-close.jsp" %>

@@ -1,100 +1,28 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Online Hospital Management System</title>
-<!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
-<script src="js/jquery.js"></script>
-
-</head>
-<body>
-
-	<div class="container-fluid">
-		<!--- Header --------------------------->
-		<div class="row navbar-fixed-top">
-			<nav class="navbar navbar-default header">
-				<div class="container-fluid">
-					<div class="navbar-header">
-						<a class="navbar-brand logo" href="#"> <img alt="Brand"
-							src="images/logo.png">
-						</a>
-						<div class="navbar-text title">
-							<p>
-								Hi Care
-							</p>
-
-						</div>
-						
-					</div>
-				</div>
-			</nav>
-		</div>
-		<!--- Header Ends Here --------------------------->
-
-		<div class="row ">
-			<div class="col-md-12">
-				<div class="panel panel-default login">
-					<div class="panel-heading logintitle" style="background-color:#665957;">Patient Login</div>
-
-					<div class="panel-body">
-						<form class="form-horizontal center-block" role="form"
-							action="PatientLogin" method="post">
-
-
-							<br />
-							<div></div>
-							<div class="input-group input-group-lg">
-								<span class="input-group-addon" id="sizing-addon1"><span
-									class="glyphicon glyphicon-envelope" aria-hidden="true"></span></span>
-								<input type="email" class="form-control" name="email"
-									placeholder="example@gmail.com" required
-									aria-describedby="sizing-addon1">
-							</div>
-
-							<br />
-							<div class="input-group input-group-lg">
-								<span class="input-group-addon" id="sizing-addon1"><span
-									class="glyphicon glyphicon-lock" aria-hidden="true"></span></span> <input
-									type="password" name="password" class="form-control"
-									placeholder="Password" required
-									aria-describedby="sizing-addon1">
-							</div>
-							<br />
-							<div class="col-sm-7 col-sm-offset-2">
-								<input type="submit" class="btn btn-primary btn-block btn-lg"
-									value="Login" style="background-color:#665957;"><br>
-								<a href="index.jsp">Click Here to Home</a>
-							</div>
-
-						</form>
-					</div>
-
-				</div>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="includes/head.jsp" %>
+<div class="gate">
+	<div class="gate__card">
+		<p class="gate__brand"><img class="gate__logo" src="images/logo.png" alt="">Hi Care</p>
+		<p class="gate__lead">Book a visit, check the day, and leave a note for the ward.</p>
+		<form class="form" action="PatientLogin" method="post">
+			<h1 class="gate__title">Patient sign in</h1>
+			<div class="form__field">
+				<label class="form__label" for="email">Email</label>
+				<input class="form__control" id="email" name="email" type="email" autocomplete="username" required>
 			</div>
-		</div>
-
-
-		<div class="row footer navbar-fixed-bottom">
-			<div class="col-md-12">
-				<div>Developed By :- # SE_OOP_Group_4K #</div>
-				<p>Copyrights © Hi Care Hospital Management System 2023. All rights
-					reserved.</p>
+			<div class="form__field">
+				<label class="form__label" for="password">Password</label>
+				<input class="form__control" id="password" name="password" type="password" autocomplete="current-password" required>
 			</div>
-		</div>
-
-
-
-
+			<div class="form__actions">
+				<button class="btn btn--primary" type="submit">Sign in</button>
+			</div>
+		</form>
+		<p class="gate__links">
+			<a href="index.jsp">Staff sign in</a>
+			<a href="doctorLogin.jsp">Doctor sign in</a>
+		</p>
 	</div>
-
-	<script src="js/bootstrap.min.js"></script>
-
+</div>
 </body>
 </html>

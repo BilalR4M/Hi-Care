@@ -1,91 +1,65 @@
 # Hi Care
-Hospital Management System
 
-## Project Description: Hospital Management System
-Hi care is a comprehensive Java-based application designed to streamline and automate various administrative and medical processes within a hospital. Built using the Maven build automation tool, this project leverages a modular structure to ensure scalability, maintainability, and ease of integration.
+Hospital Management System — Java servlet/JSP application for staff, doctor, and patient workflows, backed by MySQL and runnable with Docker.
 
-## Prerequisites
-- Eclipse IDE for Enterprise Java and Web Developers
-- JDK 17 or newer
-- Maven
-- Apache Tomcat V9.0
-- MySQL
-- JDBC
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Configuration
-https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
+## Documentation
 
-https://javatrainingschool.com/first-servlet-example/
+Full documentation lives in [`docs/`](docs/README.md):
 
-Here is a Snapshot of the web libraries 
+| Topic | Link |
+|-------|------|
+| Docs home | [docs/README.md](docs/README.md) |
+| Architecture | [docs/architecture.md](docs/architecture.md) |
+| Components | [docs/components.md](docs/components.md) |
+| Flows | [docs/flows.md](docs/flows.md) |
+| Database & SQL schemas | [docs/database.md](docs/database.md) |
+| Frontend | [docs/frontend.md](docs/frontend.md) |
+| Deployment | [docs/deployment.md](docs/deployment.md) |
 
-![image](https://github.com/BilalR4M/HospitalManagementSystem/assets/165455288/32b9d735-4b5c-479b-9d5b-bb57cdbc9765)
+## Features
 
-# Key Features:
+- **Staff:** manage departments, doctors, patients, nurses; view feedback; update profile
+- **Doctors:** view appointments; update profile
+- **Patients:** book visits, view/cancel appointments, submit feedback
 
-## Registration and management of patient information.
-- Tracking patient visits and medical history.
-- Appointment scheduling and reminders.
+## Quick start
 
-## Doctor Management
-- Management of doctor profiles and specializations.
-- Scheduling and managing doctor appointments.
-- Monitoring doctor availability and shifts.
+```bash
+docker compose up --build
+```
 
-## Staff Management:
-- Management of hospital staff information.
-- Assigning roles and responsibilities to staff members.
+Open [http://localhost:8080](http://localhost:8080).
 
+| Role | Email | Password |
+|------|-------|----------|
+| Staff | `kumudu@gmail.com` | `admin@123` |
+| Doctor | `sunil@yahoomail.com` | `sunil@123` |
+| Patient | `kumari329@yahoo.com` | `123@123` |
 
-## Technology Stack:
-  - Programming Language: **Java**
-  - Build Tool: **Maven**
-  - Web Framework: **Spring MVC**
-  - Database: **MySQL/PostgreSQL**
-  - Front-End: **JSP, HTML, CSS, JavaScript**
-  - Dependency Management: **Maven**
-  - Version Control: **Git**
-    
-## Project Structure:
-  - src: Contains the source code of the project, organized into packages such as controller, service, repository, model, and view.
-  - WebContent: Contains the web resources including JSP files, HTML, CSS, and JavaScript files.
-  - .settings: Configuration files for the development environment.
-  - build: Directory for compiled classes and build artifacts.
-  - .classpath and .project: Eclipse-specific project files.
-  - .metadata: IDE metadata (typically ignored in version control).
+If port 8080 is busy, change the mapping in [`docker-compose.yml`](docker-compose.yml).
 
-## How to Run the Project:
+## Stack
 
-  ## 1. Clone the Repository:
+- Java 17, Tomcat 9 (`javax.servlet`), JSP
+- MySQL 8 + JDBC
+- Docker Compose for app + database
 
+See [docs/architecture.md](docs/architecture.md) for diagrams.
 
-  Copy code
-  git clone https://github.com/BilalR4M/HospitalManagementSystem.git
-  cd HospitalManagementSystem
-  
-  
-  ## 2. Import the Project into an IDE:
-  
-  Open Eclipse or IntelliJ IDEA.
-  Import the project as a Maven project.
-  Configure the Database:
-  
-  ## 3. Set up a MySQL database.
-  
-  Update the database configuration in the application.properties file.
-  
-  ## 4. Build the Project:
-  
-  Copy code
-  mvn clean install
+## Project layout
 
+```text
+├── docs/                   Documentation
+├── database/hospital_db/   MySQL dumps (hms)
+├── src/com/                Servlets, beans, DAO
+├── WebContent/             JSP, CSS, JS, images
+├── Dockerfile
+├── docker-compose.yml
+└── LICENSE
+```
 
-  ## 5. Run the Application:
-  
-  Copy code
-  mvn spring-boot:run
-  
-  ## Access the Application:
-  Open a web browser and go to http://localhost:8080.
-  
-The Hospital Management System project provides a robust and scalable solution for managing hospital operations efficiently. Its modular design and use of industry-standard technologies make it a suitable choice for deployment in real-world hospital environments. Contributions and suggestions for improvements are welcome to enhance the system further.
+## License
+
+[MIT](LICENSE) — see the license file for terms.

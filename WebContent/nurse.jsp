@@ -1,212 +1,101 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="com.connection.*"%>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="images/logo.png" rel="icon" />
-<title>Online Hospital Management System</title>
-<!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/style.css" rel="stylesheet">
-<script src="js/jquery.js"></script>
-<script type="text/javascript">
-	$(document).ready(function() {
+<%
+	if (session.getAttribute("uname") == null || "".equals(session.getAttribute("uname"))) {
+		response.sendRedirect("index.jsp");
+		return;
+	}
+	request.setAttribute("nav", "staff");
+	request.setAttribute("profileHref", "profile.jsp");
+%>
+<%@ include file="includes/head.jsp" %>
+<%@ include file="includes/shell-open.jsp" %>
 
-		$('#doctorlist').show();
-		$('.doctor li:first-child a').addClass('active');
-		$('.doctor li a').click(function(e) {
+<section class="card">
+	<h1 class="card__title">Nurses</h1>
+	<ul class="tabs">
+		<li><a class="tabs__link is-active" href="#list">Nurse list</a></li>
+		<li><a class="tabs__link" href="#add">Add nurse</a></li>
+	</ul>
 
-			var tabDiv = this.hash;
-			$('.doctor li a').removeClass('active');
-			$(this).addClass('.active');
-			$('.switchgroup').hide();
-			$(tabDiv).fadeIn();
-			e.preventDefault();
-
-		});
-
-	});
-</script>
-</head>
-<body>
-	<div class="container-fluid">
-
-		<!--- Header Start -------->
-		<div class="row header">
-
-			<div class="col-md-10">
-				<h2>
-					Hi Care
-					</h2>
-			</div>
-
-			<div class="col-md-2 ">
-				<ul class="nav nav-pills ">
-					<li class="dropdown dmenu"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown" role="button" aria-haspopup="true"
-						aria-expanded="false"><%=session.getAttribute("uname")%> <span
-							class="caret"></span></a>
-						<ul class="dropdown-menu ">
-
-							<li><a href="profile.jsp">Change Profile</a></li>
-							<li role="separator" class="divider"></li>
-							<li><a href="logout.jsp">Logout</a></li>
-
-						</ul></li>
-				</ul>
-			</div>
-		</div>
-		<!--- Header Ends --------->
-		<%
-			if (session.getAttribute("uname") != null && session.getAttribute("uname") != "") {
-		%>
-		<div class="row">
-
-			<!----- Menu Area Start ------>
-			<div class="col-md-2 menucontent">
-
-				<a href="#"><h1>Dashboard</h1></a>
-
-				<ul class="nav nav-pills nav-stacked">
-					<li role="presentation"><a href="department.jsp">Department</a></li>
-					<li role="presentation"><a href="doctor.jsp">Doctors</a></li>
-					<li role="presentation"><a href="patients.jsp">Patients</a></li>
-					<li role="presentation"><a href="nurse.jsp">Nurse</a></li>
-					<li role="presentation"><a href="viewFeedback.jsp">View Feedback</a></li>
-					<li role="presentation"><a href="profile.jsp">Profile</a></li>
-				</ul>
-			</div>
-			<!---- Menu Ares Ends  -------->
-			<!---- Content Ares Start  -------->
-			<div class="col-md-10 maincontent">
-				<!----------------   Menu Tab Start   --------------->
-				<div class="panel panel-default contentinside">
-					<div class="panel-heading">Manage Nurse</div>
-					<!----------------   Panel body Start   --------------->
-					<div class="panel-body">
-						<ul class="nav nav-tabs doctor">
-							<li role="presentation"><a href="#doctorlist">Nurse List</a></li>
-							<li role="presentation"><a href="#adddoctor">Add Nurse</a></li>
-						</ul>
-
-						<!----------------   Display Nurse Data List Start  --------------->
-
-						<div id="doctorlist" class="switchgroup">
-							<table class="table table-bordered table-hover">
-								<tr class="active">
-									<td>Nurse ID</td>
-									<td>Nurse Name</td>
-									<td>Email</td>
-									<td>Address</td>
-									<td>Phone No.</td>
-									<td>Options</td>
-								</tr>
-								<%
-									Connection con = ConnectionProvider.getCon();
-										Statement st = con.createStatement();
-										ResultSet rs = st.executeQuery("select * from nurse");
-										while (rs.next()) {
-								%>
+	<div id="list" class="panel is-visible">
+		<div class="table-wrap">
+			<table class="table">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Address</th>
+						<th>Phone</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+				<%
+					Connection con = ConnectionProvider.getCon();
+					Statement st = con.createStatement();
+					ResultSet rs = st.executeQuery("select * from nurse");
+					while (rs.next()) {
+				%>
+					<tr>
+						<td class="table__id"><%=rs.getInt(1)%></td>
+						<td><%=rs.getString(2)%></td>
+						<td><%=rs.getString(3)%></td>
+						<td><%=rs.getString(5)%></td>
+						<td><%=rs.getString(6)%></td>
+						<td>
+							<div class="table__actions">
+								<a class="btn btn--edit" href="editNurse.jsp?id=<%=rs.getInt(1)%>">
+									<svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+									Edit
+								</a>
 								<form action="DeleteNurse" method="post">
-								<tr>
-									<td><input type="text" name="nid"
-										value="<%=rs.getInt(1)%>" class="form-control"></td>
-									<td><%=rs.getString(2)%></td>
-									<td><%=rs.getString(3)%></td>
-									<td><%=rs.getString(5)%></td>
-									<td><%=rs.getString(6)%></td>
-									<td><a href="editNurse.jsp?id=<%=rs.getInt(1)%>" class="btn btn-primary" data-toggle="modal"> <span
-											class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
-									</a>&nbsp;<input type="submit" value="Delete" class="btn btn-danger"
-										class="glyphicon glyphicon-trash" aria-hidden="true">
-									</td>
-								</tr>
+									<input type="hidden" name="nid" value="<%=rs.getInt(1)%>">
+									<button class="btn btn--danger" type="submit">
+										<svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+										Delete
+									</button>
 								</form>
-								<%
-									}
-								%>
-
-							</table>
-						</div>
-						<!----------------   Display Nurse Data List Ends  --------------->
-
-						<!----------------   Add Nurse Start   --------------->
-						<div id="adddoctor" class="switchgroup">
-							<div class="panel panel-default">
-								<div class="panel-body">
-									<form class="form-horizontal" action="nurseProcess.jsp"
-										method="post">
-
-
-										<div class="form-group">
-											<label class="col-sm-2 control-label">Name</label>
-											<div class="col-sm-10">
-												<input type="text" class="form-control" name="name"
-													placeholder="Name">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-2 control-label">Email</label>
-											<div class="col-sm-10">
-												<input type="Email" class="form-control" name="email"
-													placeholder="Email">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-2 control-label">Password</label>
-											<div class="col-sm-10">
-												<input type="password" class="form-control" name="password"
-													placeholder="Password">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-2 control-label">Address</label>
-											<div class="col-sm-10">
-												<input type="text" class="form-control" name="address"
-													placeholder="Address">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<label class="col-sm-2 control-label">Phone</label>
-											<div class="col-sm-10">
-												<input type="text" class="form-control" name="phone"
-													placeholder="Phone No.">
-											</div>
-										</div>
-
-										<div class="form-group">
-											<div class="col-sm-offset-2 col-sm-10">
-												<button type="submit" class="btn btn-primary">Add
-													Nurse</button>
-											</div>
-										</div>
-									</form>
-								</div>
 							</div>
-						</div>
-						<!----------------   Add Nurse Ends   --------------->
-					</div>
-					<!----------------   Panel body Ends   --------------->
-				</div>
-				<!----------------   Menu Tab Ends   --------------->
-			</div>
-			<!---- Content Ares Ends  -------->
+						</td>
+					</tr>
+				<%
+					}
+				%>
+				</tbody>
+			</table>
 		</div>
 	</div>
-	<script src="js/bootstrap.min.js"></script>
-</body>
-<%
-	} else {
-		response.sendRedirect("index.jsp");
-	}
-%>
-</html>
+
+	<div id="add" class="panel">
+		<form class="form" action="nurseProcess.jsp" method="post">
+			<div class="form__field">
+				<label class="form__label" for="name">Name</label>
+				<input class="form__control" id="name" type="text" name="name" required>
+			</div>
+			<div class="form__field">
+				<label class="form__label" for="email">Email</label>
+				<input class="form__control" id="email" type="email" name="email" required>
+			</div>
+			<div class="form__field">
+				<label class="form__label" for="password">Password</label>
+				<input class="form__control" id="password" type="password" name="password" required>
+			</div>
+			<div class="form__field">
+				<label class="form__label" for="address">Address</label>
+				<input class="form__control" id="address" type="text" name="address" required>
+			</div>
+			<div class="form__field">
+				<label class="form__label" for="phone">Phone</label>
+				<input class="form__control" id="phone" type="text" name="phone" required>
+			</div>
+			<div class="form__actions">
+				<button class="btn btn--primary" type="submit">Add nurse</button>
+			</div>
+		</form>
+	</div>
+</section>
+
+<%@ include file="includes/shell-close.jsp" %>
