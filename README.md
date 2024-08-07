@@ -1,65 +1,33 @@
 # Hi Care
 
-Hospital Management System — Java servlet/JSP application for staff, doctor, and patient workflows, backed by MySQL and runnable with Docker.
+Java servlet/JSP hospital desk for staff, doctors, and patients. MySQL backend. Docker Compose to run.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-
-## Documentation
-
-Full documentation lives in [`docs/`](docs/README.md):
-
-| Topic | Link |
-|-------|------|
-| Docs home | [docs/README.md](docs/README.md) |
-| Architecture | [docs/architecture.md](docs/architecture.md) |
-| Components | [docs/components.md](docs/components.md) |
-| Flows | [docs/flows.md](docs/flows.md) |
-| Database & SQL schemas | [docs/database.md](docs/database.md) |
-| Frontend | [docs/frontend.md](docs/frontend.md) |
-| Deployment | [docs/deployment.md](docs/deployment.md) |
-
-## Features
-
-- **Staff:** manage departments, doctors, patients, nurses; view feedback; update profile
-- **Doctors:** view appointments; update profile
-- **Patients:** book visits, view/cancel appointments, submit feedback
-
-## Quick start
+## Run
 
 ```bash
 docker compose up --build
 ```
 
-Open [http://localhost:8080](http://localhost:8080).
+App: [http://localhost:8080](http://localhost:8080) · MySQL: `localhost:3306` / `hms` / `root` / `bilz999`
 
-| Role | Email | Password |
-|------|-------|----------|
+| | Email | Password |
+|---|---|---|
 | Staff | `kumudu@gmail.com` | `admin@123` |
 | Doctor | `sunil@yahoomail.com` | `sunil@123` |
 | Patient | `kumari329@yahoo.com` | `123@123` |
 
-If port 8080 is busy, change the mapping in [`docker-compose.yml`](docker-compose.yml).
+## What’s included
 
-## Stack
+- **Staff** — departments, doctors, patients, nurses, feedback, profile  
+- **Doctor** — appointments, profile  
+- **Patient** — book visit, appointments, feedback, profile  
 
-- Java 17, Tomcat 9 (`javax.servlet`), JSP
-- MySQL 8 + JDBC
-- Docker Compose for app + database
+Stack: Java 17, Tomcat 9, JSP, MySQL 8, JDBC.
 
-See [docs/architecture.md](docs/architecture.md) for diagrams.
+## Docs
 
-## Project layout
-
-```text
-├── docs/                   Documentation
-├── database/hospital_db/   MySQL dumps (hms)
-├── src/com/                Servlets, beans, DAO
-├── WebContent/             JSP, CSS, JS, images
-├── Dockerfile
-├── docker-compose.yml
-└── LICENSE
-```
+[docs/](docs/README.md) — architecture, components, flows, database, frontend, deployment.
 
 ## License
 
-[MIT](LICENSE) — see the license file for terms.
+[MIT](LICENSE)
